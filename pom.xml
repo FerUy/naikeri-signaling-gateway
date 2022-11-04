@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <artifactId>naikeri-signaling-gateway-core</artifactId>
+    <groupId>com.naikeri</groupId>
+    <version>2.1.1-SNAPSHOT</version>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.release>11</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sctp.version>2.1.0-16</sctp.version>
+        <jss7.version>8.5.0-334</jss7.version>
+        <jdiameter.version>2.0.0-241</jdiameter.version>
+        <guava.version>27.0.1-jre</guava.version>
+        <commons.version>1.0.0.CR1</commons.version>
+        <slf4j.version>1.7.36</slf4j.version>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>admin</id>
+            <name>localhost-releases</name>
+            <url>http://ec2-15-229-74-89.sa-east-1.compute.amazonaws.com:8082/artifactory/libs-release-local</url>
+        </repository>
+        <snapshotRepository>
+            <id>admin</id>
+            <name>localhost-snapshots</name>
+            <url>http://ec2-15-229-74-89.sa-east-1.compute.amazonaws.com:8082/artifactory/libs-release-local</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <dependencies>
+        <!-- License Enforcer -->
+        <dependency>
+            <groupId>com.license4j</groupId>
+            <artifactId>license4j-runtime-library</artifactId>
+            <version>4.7.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.naikeri.licensor</groupId>
+            <artifactId>NaikeriLicensor</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Rate Limiter-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
+        <!-- SS7 -->
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.congestion</groupId>
+            <artifactId>congestion</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.statistics</groupId>
+            <artifactId>statistics-api</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+
+        <!-- SCTP -->
+        <dependency>
+            <groupId>org.mobicents.protocols.sctp</groupId>
+            <artifactId>sctp-api</artifactId>
+            <version>${sctp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mobicents.protocols.sctp</groupId>
+            <artifactId>sctp-impl</artifactId>
+            <version>${sctp.version}</version>
+        </dependency>
+
+        <!-- M3UA -->
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.m3ua</groupId>
+            <artifactId>m3ua-api</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.m3ua</groupId>
+            <artifactId>m3ua-impl</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+
+        <!-- SCCP -->
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.sccp</groupId>
+            <artifactId>sccp-api</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.sccp</groupId>
+            <artifactId>sccp-impl</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.ss7ext</groupId>
+            <artifactId>ss7-ext-api</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.ss7ext</groupId>
+            <artifactId>ss7-ext-impl</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.sccp</groupId>
+            <artifactId>sccp-api-ext</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.sccp</groupId>
+            <artifactId>sccp-impl-ext</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+
+        <!-- TCAP -->
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.tcap</groupId>
+            <artifactId>tcap-api</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.tcap</groupId>
+            <artifactId>tcap-impl</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+
+        <!-- MAP -->
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.map</groupId>
+            <artifactId>map-api</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.map</groupId>
+            <artifactId>map-impl</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+
+        <!-- CAP -->
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.cap</groupId>
+            <artifactId>cap-api</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.cap</groupId>
+            <artifactId>cap-impl</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+
+        <!-- INAP -->
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.inap</groupId>
+            <artifactId>inap-api</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.inap</groupId>
+            <artifactId>inap-impl</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+
+        <!-- ISUP -->
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.isup</groupId>
+            <artifactId>isup-api</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restcomm.protocols.ss7.isup</groupId>
+            <artifactId>isup-impl</artifactId>
+            <version>${jss7.version}</version>
+        </dependency>
+
+        <!-- COMMON LIBS -->
+        <dependency>
+            <groupId>org.mobicents.commons</groupId>
+            <artifactId>commons</artifactId>
+            <version>${commons.version}</version>
+        </dependency>
+
+        <!-- DIAMETER -->
+        <dependency>
+            <groupId>org.mobicents.diameter</groupId>
+            <artifactId>jdiameter-api</artifactId>
+            <version>${jdiameter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mobicents.diameter</groupId>
+            <artifactId>jdiameter-impl</artifactId>
+            <version>${jdiameter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mobicents.diameter</groupId>
+            <artifactId>restcomm-diameter-mux-jar</artifactId>
+            <version>${jdiameter.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
