@@ -6,10 +6,6 @@ pipeline {
 		maven 'Maven_3.8.5'
 	}
 
-    options {
-    	//buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '30', numToKeepStr: '10'))
-    }
-
     parameters {
         string(name: 'SGW_MAJOR_VERSION', defaultValue: '2.1.1', description: 'The major version for naikeri-signaling-gateway-core')
     }
