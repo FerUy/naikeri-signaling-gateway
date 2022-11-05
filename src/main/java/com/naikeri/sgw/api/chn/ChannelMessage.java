@@ -7,16 +7,17 @@ import java.util.UUID;
 public class ChannelMessage {
 
     private String transactionId;
+
     private String originId;
 
-    private Map<String, Object> payloadParameters = new HashMap<String, Object>();
+    private Map<String, Object> payloadParameters = new HashMap<>();
 
     public String getTransactionId() {
-        return transactionId;
+        return this.transactionId;
     }
 
     public ChannelMessage(String originId) {
-        transactionId = UUID.randomUUID().toString();
+        this.transactionId = UUID.randomUUID().toString();
         this.originId = originId;
     }
 
@@ -32,23 +33,24 @@ public class ChannelMessage {
     }
 
     public void setParameter(String name, Object value) {
-        if (payloadParameters.containsKey(name))
-            payloadParameters.replace(name, value);
-        else
-            payloadParameters.put(name, value);
+        if (this.payloadParameters.containsKey(name)) {
+            this.payloadParameters.replace(name, value);
+        } else {
+            this.payloadParameters.put(name, value);
+        }
     }
 
     public Object getParameter(String name) {
-        return payloadParameters.get(name);
+        return this.payloadParameters.get(name);
     }
 
     public String getOriginId() {
-        return originId;
+        return this.originId;
     }
 
-    @Override
     public String toString() {
-        return String.format("[tid = %s, origin = %s]", transactionId, originId);
+        return String.format("[tid = %s, origin = %s]", new Object[] { this.transactionId, this.originId });
     }
 
 }
+

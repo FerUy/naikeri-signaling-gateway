@@ -9,30 +9,30 @@ public class Worker extends Thread {
     private static final Logger logger = LoggerFactory.getLogger(Worker.class);
 
     private Application application;
+
     private Integer workerId;
 
     Worker(Integer workerId, Application application) {
-
         logger.info("Worker Id '" + workerId + "' instantiated for application '" + application.getApplicationSettings().getName() + "'");
-
         this.application = application;
         this.workerId = workerId;
     }
 
     public void run() {
-        logger.info("Worker Id '" + workerId + "' started for application '" + application.getApplicationSettings().getName() + "'");
-        while(application.getStatus() != Application.Status.Terminated) {
+        logger.info("Worker Id '" + this.workerId + "' started for application '" + this.application.getApplicationSettings().getName() + "'");
+        while (this.application.getStatus() != Application.Status.Terminated) {
             try {
-                if (application.getStatus() == Application.Status.Suspended) {
+                if (this.application.getStatus() == Application.Status.Suspended) {
                     Thread.sleep(50);
-                } else {
-                    ChannelMessage message = application.getNextMessage();
-                    application.processMessage(message);
+                    continue;
                 }
+                ChannelMessage message = this.application.getNextMessage();
+                this.application.processMessage(message);
             } catch (Exception e) {
-                logger.error("Worker id '" + workerId + "' caught exception '" + e + "'");
+                logger.error("Worker id '" + this.workerId + "' caught exception '" + e + "'");
                 e.printStackTrace();
             }
         }
     }
 }
+

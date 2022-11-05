@@ -6,6 +6,7 @@ import java.util.Timer;
 import com.naikeri.sgw.impl.settings.MonitoringSettings;
 import com.naikeri.sgw.network.layers.M3uaLayer;
 import com.naikeri.sgw.network.layers.SctpLayer;
+import org.restcomm.protocols.ss7.m3ua.M3UACounterProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.restcomm.protocols.ss7.m3ua.As;
@@ -29,211 +30,117 @@ import org.mobicents.protocols.api.Server;
 public class MonitorLayers implements M3UAManagementEventListener, Mtp3UserPartListener, ManagementEventListener {
 
   private M3UAManagementImpl m3uaMgmt;
+
   private Management sctpMgmt;
+
   public String endpoint;
+
   public String job;
+
   public String instance;
+
   public Logger logger = LoggerFactory.getLogger(MonitorLayers.class);
-  public long m3uain = 0;
-  public long m3uaout = 0;
-  public long mtp3Bytes = 0;
+
+  public long m3uaIn = 0L;
+
+  public long m3uaOut = 0L;
+
+  public long mtp3Bytes = 0L;
+
   public boolean custom = false;
+
   private MonitoringSettings monitoringObj;
+
   private Timer monitoringTimer;
 
-  public MonitorLayers(M3uaLayer m3uaLayer, SctpLayer sctpLayer,
-                       MonitoringSettings monitoringLayerObject) throws FileNotFoundException {
+  public MonitorLayers(M3uaLayer m3uaLayer, SctpLayer sctpLayer, MonitoringSettings monitoringLayerObject) throws FileNotFoundException {
     this.m3uaMgmt = m3uaLayer.getM3uaManagement();
     this.sctpMgmt = sctpLayer.getSctpManagement();
     this.monitoringObj = monitoringLayerObject;
-    m3uaMgmt.addM3UAManagementEventListener(this);
-    m3uaMgmt.addMtp3UserPartListener(this);
-    sctpMgmt.addManagementEventListener(this);
+    this.m3uaMgmt.addM3UAManagementEventListener(this);
+    this.m3uaMgmt.addMtp3UserPartListener(this);
+    this.sctpMgmt.addManagementEventListener(this);
   }
 
   public void start() throws IllegalStateException {
-    logger.info(
-        String.format("starting Monitoring Layer for '%s' ...", this.monitoringObj.getM3uaName()));
+    this.logger.info(String.format("starting Monitoring Layer for '%s' ...", new Object[] { this.monitoringObj.getM3uaName() }));
     try {
       this.m3uaMgmt.setStatisticsEnabled(true);
     } catch (Exception e) {
-      logger.error("Cannot enable stats! " + e.getMessage());
+      this.logger.error("Cannot enable stats! " + e.getMessage());
     }
-    monitoringTimer = new Timer();
-    MonitoringTask task = new MonitoringTask(this, m3uaMgmt.getCounterProviderImpl(), this.m3uaMgmt,
-        this.sctpMgmt, this.monitoringObj.getFileName());
-    monitoringTimer.scheduleAtFixedRate(task, this.monitoringObj.getRefreshInterval(),
-        this.monitoringObj.getRefreshInterval());
+    this.monitoringTimer = new Timer();
+    MonitoringTask task = new MonitoringTask(this, this.m3uaMgmt.getCounterProviderImpl(), this.m3uaMgmt, this.sctpMgmt, this.monitoringObj.getFileName());
+    this.monitoringTimer.scheduleAtFixedRate(task, this.monitoringObj.getRefreshInterval().intValue(), this.monitoringObj.getRefreshInterval().intValue());
   }
 
   public void stop() {
-    monitoringTimer.cancel();
+    this.monitoringTimer.cancel();
   }
 
-  @Override
-  public void onServerAdded(Server server) {
+  public void onServerAdded(Server server) {}
 
-  }
+  public void onServerRemoved(Server server) {}
 
-  @Override
-  public void onServerRemoved(Server server) {
+  public void onAssociationAdded(Association association) {}
 
-  }
+  public void onAssociationRemoved(Association association) {}
 
-  @Override
-  public void onAssociationAdded(Association association) {
+  public void onAssociationStarted(Association association) {}
 
-  }
+  public void onAssociationStopped(Association association) {}
 
-  @Override
-  public void onAssociationRemoved(Association association) {
+  public void onAssociationUp(Association association) {}
 
-  }
+  public void onAssociationDown(Association association) {}
 
-  @Override
-  public void onAssociationStarted(Association association) {
+  public void onServerModified(Server server) {}
 
-  }
+  public void onAssociationModified(Association association) {}
 
-  @Override
-  public void onAssociationStopped(Association association) {
+  public void onServiceStarted() {}
 
-  }
+  public void onServiceStopped() {}
 
-  @Override
-  public void onAssociationUp(Association association) {
+  public void onRemoveAllResources() {}
 
-  }
+  public void onAsCreated(As as) {}
 
-  @Override
-  public void onAssociationDown(Association association) {
+  public void onAsDestroyed(As as) {}
 
-  }
+  public void onAspFactoryCreated(AspFactory aspFactory) {}
 
-  @Override
-  public void onServerModified(Server server) {
+  public void onAspFactoryDestroyed(AspFactory aspFactory) {}
 
-  }
+  public void onAspAssignedToAs(As as, Asp asp) {}
 
-  @Override
-  public void onAssociationModified(Association association) {
+  public void onAspUnassignedFromAs(As as, Asp asp) {}
 
-  }
+  public void onAspFactoryStarted(AspFactory aspFactory) {}
 
-  @Override
-  public void onServiceStarted() {
+  public void onAspFactoryStopped(AspFactory aspFactory) {}
 
-  }
+  public void onAspActive(Asp asp, State state) {}
 
-  @Override
-  public void onServiceStopped() {
+  public void onAspInactive(Asp asp, State state) {}
 
-  }
+  public void onAspDown(Asp asp, State state) {}
 
-  @Override
-  public void onRemoveAllResources() {
+  public void onAsActive(As as, State state) {}
 
-  }
+  public void onAsPending(As as, State state) {}
 
-  @Override
-  public void onAsCreated(As as) {
+  public void onAsInactive(As as, State state) {}
 
-  }
+  public void onAsDown(As as, State state) {}
 
-  @Override
-  public void onAsDestroyed(As as) {
+  public void onMtp3TransferMessage(Mtp3TransferPrimitive mtp3TransferPrimitive) {}
 
-  }
+  public void onMtp3PauseMessage(Mtp3PausePrimitive mtp3PausePrimitive) {}
 
-  @Override
-  public void onAspFactoryCreated(AspFactory aspFactory) {
+  public void onMtp3ResumeMessage(Mtp3ResumePrimitive mtp3ResumePrimitive) {}
 
-  }
+  public void onMtp3StatusMessage(Mtp3StatusPrimitive mtp3StatusPrimitive) {}
 
-  @Override
-  public void onAspFactoryDestroyed(AspFactory aspFactory) {
-
-  }
-
-  @Override
-  public void onAspAssignedToAs(As as, Asp asp) {
-
-  }
-
-  @Override
-  public void onAspUnassignedFromAs(As as, Asp asp) {
-
-  }
-
-  @Override
-  public void onAspFactoryStarted(AspFactory aspFactory) {
-
-  }
-
-  @Override
-  public void onAspFactoryStopped(AspFactory aspFactory) {
-
-  }
-
-  @Override
-  public void onAspActive(Asp asp, State state) {
-
-  }
-
-  @Override
-  public void onAspInactive(Asp asp, State state) {
-
-  }
-
-  @Override
-  public void onAspDown(Asp asp, State state) {
-
-  }
-
-  @Override
-  public void onAsActive(As as, State state) {
-
-  }
-
-  @Override
-  public void onAsPending(As as, State state) {
-
-  }
-
-  @Override
-  public void onAsInactive(As as, State state) {
-
-  }
-
-  @Override
-  public void onAsDown(As as, State state) {
-
-  }
-
-  @Override
-  public void onMtp3TransferMessage(Mtp3TransferPrimitive mtp3TransferPrimitive) {
-
-  }
-
-  @Override
-  public void onMtp3PauseMessage(Mtp3PausePrimitive mtp3PausePrimitive) {
-
-  }
-
-  @Override
-  public void onMtp3ResumeMessage(Mtp3ResumePrimitive mtp3ResumePrimitive) {
-
-  }
-
-  @Override
-  public void onMtp3StatusMessage(Mtp3StatusPrimitive mtp3StatusPrimitive) {
-
-  }
-
-  @Override
-  public void onMtp3EndCongestionMessage(Mtp3EndCongestionPrimitive mtp3EndCongestionPrimitive) {
-
-  }
-
-
+  public void onMtp3EndCongestionMessage(Mtp3EndCongestionPrimitive mtp3EndCongestionPrimitive) {}
 }

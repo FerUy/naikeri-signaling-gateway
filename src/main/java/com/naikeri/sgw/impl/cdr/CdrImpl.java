@@ -9,7 +9,9 @@ import java.util.List;
 public class CdrImpl {
 
   private final Logger logger = LoggerFactory.getLogger(CdrImpl.class);
+
   private List<CdrSettings> cdrSettings = null;
+
   private static CdrImpl instance = null;
 
   public static CdrImpl getInstance() {
@@ -19,18 +21,14 @@ public class CdrImpl {
     return instance;
   }
 
-  private CdrImpl() {
-  }
-
   public void setCdrSettings(List<CdrSettings> cdrSettings) {
     this.cdrSettings = cdrSettings;
   }
 
   public void write(Cdr cdr) {
-    if (cdrSettings != null) {
+    if (this.cdrSettings != null) {
       CdrSettings settings = null;
-
-      for (CdrSettings lookUpSettings : cdrSettings) {
+      for (CdrSettings lookUpSettings : this.cdrSettings) {
         if (lookUpSettings.getName().equalsIgnoreCase(cdr.getName())) {
           settings = lookUpSettings;
         }
@@ -44,12 +42,11 @@ public class CdrImpl {
           cdrLogger.info(cdr.stringifyAll(settings.getSeparator(), settings.getFields()));
         }
       } else {
-        logger.error("Could not print CDR, CDR name '" + cdr.getName()
-            + "' not found in any CDR Setting name. Not printed CDR: '" + cdr.stringifyAll(",", null)
-            + "'");
+        this.logger.error("Could not print CDR, CDR name '" + cdr.getName() + "' not found in any CDR Setting name. Not printed CDR: '" +
+            cdr.stringifyAll(",", null) + "'");
       }
     } else {
-      logger.error("Trying to use CDR Impl without loading up the configurations");
+      this.logger.error("Trying to use CDR Impl without loading up the configurations");
     }
   }
 }

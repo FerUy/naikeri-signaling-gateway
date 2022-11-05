@@ -16,31 +16,34 @@ public abstract class Application implements IApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    enum Status {Initialized, Running, Suspended, Terminated}
+    enum Status {
+        Initialized, Running, Suspended, Terminated;
+    }
+
     private Status status = Status.Initialized;
 
     private ApplicationSettings applicationSettings;
 
-    private List<Thread> workerThreads = new ArrayList<Thread>();
-    // private Integer workerThreadCount = 10;
+    private List<Thread> workerThreads = new ArrayList<>();
+
     private QueueInterface queue;
 
     ChannelHandler channelHandler;
 
     Status getStatus() {
-        return status;
+        return this.status;
     }
 
     ApplicationSettings getApplicationSettings() {
-        return applicationSettings;
+        return this.applicationSettings;
     }
 
     ChannelMessage getNextMessage() {
-        return queue.receive();
+        return this.queue.receive();
     }
 
     ChannelHandler getChannelHandler() {
-        return channelHandler;
+        return this.channelHandler;
     }
 
     public void setChannelHandler(ChannelHandler channelHandler) {
@@ -49,30 +52,29 @@ public abstract class Application implements IApplication {
 
     protected Application(ApplicationSettings applicationSettings) {
         this.applicationSettings = applicationSettings;
-        // this.channelHandler = channelHandler;
 
-        queue = QueueInstancePool.getQueueInstance(applicationSettings.getChannelName());
+        this.queue = QueueInstancePool.getQueueInstance(applicationSettings.getChannelName());
         logger.debug("Application '" + applicationSettings.getName() + "' using queue '" +
             applicationSettings.getChannelName() + "' with '" + applicationSettings.getWorkers() + "' workers.");
 
-        for (Integer workerThreadId = 0; workerThreadId < applicationSettings.getWorkers(); workerThreadId++) {
-            workerThreads.add(new Worker(workerThreadId, this));
+        Integer integer1, integer2;
+        for (Integer workerThreadId = Integer.valueOf(0); workerThreadId.intValue() < applicationSettings.getWorkers(); integer1 = workerThreadId, integer2 = workerThreadId = Integer.valueOf(workerThreadId.intValue() + 1)) {
+            this.workerThreads.add(new Worker(workerThreadId, this));
         }
     }
 
     public void start() {
-        status = Status.Running;
-
-        for (Thread worker : workerThreads)
+        this.status = Status.Running;
+        for (Thread worker : this.workerThreads)
             worker.start();
     }
 
     void suspend(Boolean suspendApplication) {
-        status = suspendApplication ? Status.Suspended : Status.Running;
+        this.status = suspendApplication.booleanValue() ? Status.Suspended : Status.Running;
     }
 
     void stop() {
-        status = Status.Terminated;
+        this.status = Status.Terminated;
     }
 
 }

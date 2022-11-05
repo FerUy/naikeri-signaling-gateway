@@ -24,22 +24,20 @@ public class SgwResource {
 
     public SgwResource(String name, String userDirectory) {
         try {
-            String externalFile = userDirectory + "/" + name;
-            logger.info(String.format("Loading configuration from '%s'", externalFile));
+            String externalFile = userDirectory + "/" + userDirectory;
+            logger.info(String.format("Loading configuration from '%s'", new Object[] { externalFile }));
             File file = new File(externalFile);
             if (file.exists()) {
-                inputStream = new FileInputStream(file);
-
+                this.inputStream = new FileInputStream(file);
             } else {
-                inputStream = this.getClass().getClassLoader().getResourceAsStream(name);
-                localResource = true;
+                this.inputStream = getClass().getClassLoader().getResourceAsStream(name);
+                this.localResource = true;
             }
-        } catch (Exception e) {
-            // log error
-        }
+        } catch (Exception exception) {}
     }
-    public Boolean isLocalResource(){
-        return this.localResource;
+
+    public Boolean isLocalResource() {
+        return Boolean.valueOf(this.localResource);
     }
 
 }

@@ -37,10 +37,10 @@ public class SignalingGateway extends Thread {
     return instance;
   }
 
-  private final Map<String, Application> applications = new HashMap<String, Application>();
-  private final Map<String, ChannelHandler> channels = new HashMap<String, ChannelHandler>();
-  private final Map<String, LayerInterface> layers = new HashMap<String, LayerInterface>();
-  private final Map<String, MonitorLayers> monitorLayers = new HashMap<String, MonitorLayers>();
+  private final Map<String, Application> applications = new HashMap<>();
+  private final Map<String, ChannelHandler> channels = new HashMap<>();
+  private final Map<String, LayerInterface> layers = new HashMap<>();
+  private final Map<String, MonitorLayers> monitorLayers = new HashMap<>();
 
   public static SignalingGateway initialize(final String[] args) {
     logger.info("Instance is initializing... " + System.getProperty("mainConfig.path"));
@@ -169,11 +169,9 @@ public class SignalingGateway extends Thread {
 
   @Override
   public void run() {
-    // read configuration file for app and chn
     try {
-      final InputStream inputStream =
-          new SgwResource("naikeri-signaling-gateway.xml").getAsStream();
-      final XmlConfiguration xmlConfiguration = new XmlConfiguration(inputStream);
+      InputStream inputStream = (new SgwResource("naikeri-signaling-gateway.xml")).getAsStream();
+      XmlConfiguration xmlConfiguration = new XmlConfiguration(inputStream);
       setUpLayers(xmlConfiguration);
       // setup the channels
       setUpChannels(xmlConfiguration);
@@ -183,22 +181,18 @@ public class SignalingGateway extends Thread {
       setUpMonitoring(xmlConfiguration);
       // Setup the CDR Settings
       setUpCDRConfiguration(xmlConfiguration);
-    } catch (
-
-    final Exception e) {
+    } catch (Exception e) {
       logger.error("Failed to start application instance! Exiting the application. Error: ", e);
       System.exit(1);
     }
-
-    running.set(true);
-    // TO DO: this code will raise notification status to HomeReRouting instance
-    while (running.get()) {
+    this.running.set(true);
+    while (this.running.get()) {
       try {
         Thread.sleep(1000L);
-      } catch (final InterruptedException e) {
+      } catch (InterruptedException e) {
         logger.warn("Interrupted! ", e);
         Thread.currentThread().interrupt();
-      } 
+      }
     }
 
     logger.info("Instance shutdown.");
@@ -223,13 +217,13 @@ public class SignalingGateway extends Thread {
   private void shutDownAllLayers() {
     LayerInterface layerToStop = null;
     try {
-      for (final Map.Entry<String, LayerInterface> layer : layers.entrySet()) {
+      for (Map.Entry<String, LayerInterface> layer : this.layers.entrySet()) {
         layerToStop = layer.getValue();
-        logger.info(String.format("Stopping %s Layer, name = %s", layer.getValue().getName(),
-            layer.getKey()));
-        layer.getValue().stop();
+        logger.info(String.format("Stopping %s Layer, name = %s", new Object[] { ((LayerInterface)layer.getValue()).getName(), layer
+            .getKey() }));
+        (layer.getValue()).stop();
       }
-    } catch (final Exception e) {
+    } catch (Exception e) {
       if (layerToStop != null) {
         logger.error("Failed to stop '" + layerToStop.getName() + "' Layer " + e);
       } else {

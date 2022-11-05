@@ -25,7 +25,7 @@ class MonitoringTask extends TimerTask {
   private M3UAManagementImpl m3uaMgmt;
   private Management sctpMgmt;
   private String log_file;
-  private HashMap<String, Integer> ASPmonitorList = new HashMap<String, Integer>();
+  private HashMap<String, Integer> ASPmonitorList = new HashMap<>();
   private static final Logger logger = LoggerFactory.getLogger(MonitoringTask.class);
 
   public MonitoringTask(MonitorLayers monitorLayers, M3UACounterProvider cprovider,
@@ -49,8 +49,7 @@ class MonitoringTask extends TimerTask {
     if (!(sctpMgmt.getAssociations().isEmpty())) {
       Map<String, Association> assocs = sctpMgmt.getAssociations();
       for (Map.Entry<String, Association> entry : assocs.entrySet()) {
-        // we need to generate 2 lines (for each possible status: UP, DOWN) since for prometheus
-        // to count and monitor each state
+        // we need to generate 2 lines (for each possible status: UP, DOWN) since for Prometheus to count and monitor each state
         try {
           if (sctpMgmt.getAssociation(entry.getKey()).isUp()) {
             sctpgauge = 1.0;
@@ -105,135 +104,111 @@ class MonitoringTask extends TimerTask {
     Iterator<As> iterator = m3uaMgmt.getAppServers().iterator();
     log = log + "# TYPE m3ua_as gauge" + "\n";
     while (iterator.hasNext()) {
-      // we need to generate 4 lines (for each possible status: DOWN, PENDING, INACTIVE, ACTIVE)
-      // since for prometheus to count and monitor each state
-
-      As as = (As) iterator.next();
+      // we need to generate 4 lines (for each possible status: DOWN, PENDING, INACTIVE, ACTIVE) for Prometheus to count and monitor each state
+      As as = iterator.next();
       asgauge = 1.0;
       if (as.getState().toString().equals("ACTIVE")) {
         log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"ACTIVE\"} " + asgauge + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"DOWN\"} " + (asgauge - 1.0)
-            + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"PENDING\"} " + (asgauge - 1.0)
-            + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"INACTIVE\"} " + (asgauge - 1.0)
-            + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"DOWN\"} " + (asgauge - 1.0) + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"PENDING\"} " + (asgauge - 1.0) + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"INACTIVE\"} " + (asgauge - 1.0) + "\n";
       } else if (as.getState().toString().equals("DOWN")) {
         log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"DOWN\"} " + asgauge + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"ACTIVE\"} " + (asgauge - 1.0)
-            + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"PENDING\"} " + (asgauge - 1.0)
-            + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"INACTIVE\"} " + (asgauge - 1.0)
-            + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"ACTIVE\"} " + (asgauge - 1.0) + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"PENDING\"} " + (asgauge - 1.0) + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"INACTIVE\"} " + (asgauge - 1.0) + "\n";
       } else if (as.getState().toString().equals("PENDING")) {
         log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"PENDING\"} " + asgauge + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"ACTIVE\"} " + (asgauge - 1.0)
-            + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"DOWN\"} " + (asgauge - 1.0)
-            + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"INACTIVE\"} " + (asgauge - 1.0)
-            + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"ACTIVE\"} " + (asgauge - 1.0) + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"DOWN\"} " + (asgauge - 1.0) + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"INACTIVE\"} " + (asgauge - 1.0) + "\n";
       } else if (as.getState().toString().equals("INACTIVE")) {
         log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"INACTIVE\"} " + asgauge + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"ACTIVE\"} " + (asgauge - 1.0)
-            + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"DOWN\"} " + (asgauge - 1.0)
-            + "\n";
-        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"PENDING\"} " + (asgauge - 1.0)
-            + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"ACTIVE\"} " + (asgauge - 1.0) + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"DOWN\"} " + (asgauge - 1.0) + "\n";
+        log = log + "m3ua_as{name=\"" + as.getName() + "\",status=\"PENDING\"} " + (asgauge - 1.0) + "\n";
       }
     }
     log = log + "# TYPE m3ua_asp gauge" + "\n";
 
     Iterator<AspFactory> iteratoraspf = m3uaMgmt.getAspfactories().iterator();
     while (iteratoraspf.hasNext()) {
-      AspFactory aspf = (AspFactory) iteratoraspf.next();
-      Iterator<Asp> iteratorasp = aspf.getAspList().iterator();
+      AspFactory aspf = iteratoraspf.next();
+      Iterator<Asp> iteratorAsp = aspf.getAspList().iterator();
       String asp_assocname = aspf.getAssociation().getName();
 
-      while (iteratorasp.hasNext()) {
-        // we need to generate 3 lines (for each possible status: DOWN, INACTIVE, ACTIVE) since
-        // for prometheus to count and monitor each state
-        Asp asp = (Asp) iteratorasp.next();
+      while (iteratorAsp.hasNext()) {
+        // we need to generate 3 lines (for each possible status: DOWN, INACTIVE, ACTIVE) for Prometheus to count and monitor each state
+        Asp asp = iteratorAsp.next();
         As linked_as = asp.getAs();
         if (asp.getState().toString().equals("ACTIVE")) {
           aspgauge = 1.0;
-          log =
-              log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"ACTIVE\"} " + aspgauge + "\n";
-          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"INACTIVE\"} "
-              + (aspgauge - 1.0) + "\n";
-          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"DOWN\"} " + (aspgauge - 1.0)
-              + "\n";
+          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"ACTIVE\"} " + aspgauge + "\n";
+          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"INACTIVE\"} " + (aspgauge - 1.0) + "\n";
+          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"DOWN\"} " + (aspgauge - 1.0) + "\n";
         } else if (asp.getState().toString().equals("INACTIVE")) {
           aspgauge = 1.0;
-          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"INACTIVE\"} " + aspgauge
-              + "\n";
-          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"ACTIVE\"} "
-              + (aspgauge - 1.0) + "\n";
-          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"DOWN\"} " + (aspgauge - 1.0)
-              + "\n";
+          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"INACTIVE\"} " + aspgauge + "\n";
+          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"ACTIVE\"} " + (aspgauge - 1.0) + "\n";
+          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"DOWN\"} " + (aspgauge - 1.0) + "\n";
         } else if (asp.getState().toString().equals("DOWN")) {
           aspgauge = 1.0;
           log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"DOWN\"} " + aspgauge + "\n";
-          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"ACTIVE\"} "
-              + (aspgauge - 1.0) + "\n";
-          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"INACTIVE\"} "
-              + (aspgauge - 1.0) + "\n";
+          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"ACTIVE\"} " + (aspgauge - 1.0) + "\n";
+          log = log + "m3ua_asp{name=\"" + asp.getName() + "\",status=\"INACTIVE\"} " + (aspgauge - 1.0) + "\n";
         }
-        if ((!(asp.getState().toString().equals("ACTIVE")))
-            && linked_as.getState().toString().equals("ACTIVE")) {
+        if ((!(asp.getState().toString().equals("ACTIVE"))) && linked_as.getState().toString().equals("ACTIVE")) {
           // verify if the association is already on the list
-          if (ASPmonitorList.get(asp_assocname.toString()) != null) {
+          if (ASPmonitorList.get(asp_assocname) != null) {
             logger.info("ASP Auditor: ASP " + asp.getName() + " not ACTIVE and AS "
                 + linked_as.getName() + " is ACTIVE, auditor counter value = "
                 + ASPmonitorList.get(asp_assocname.toString()));
             if (ASPmonitorList.get(asp_assocname.toString()) == 5) {
               try {
                 logger.info(
-                    "Threshold reached, stopping SCTP association: " + asp_assocname.toString());
-                sctpMgmt.stopAssociation(asp_assocname.toString());
+                    "Threshold reached, stopping SCTP association: " + asp_assocname);
+                sctpMgmt.stopAssociation(asp_assocname);
                 int counter = 0;
-                counter = ASPmonitorList.get(asp_assocname.toString());
+                counter = ASPmonitorList.get(asp_assocname);
                 counter = counter + 1;
-                ASPmonitorList.put(asp_assocname.toString(), counter);
-              } catch (Exception e) { 
+                ASPmonitorList.put(asp_assocname, counter);
+              } catch (Exception e) {
                 logger.error("Error:", e);
                 e.printStackTrace();
-                ASPmonitorList.put(asp_assocname.toString(), 3);
+                ASPmonitorList.put(asp_assocname, 3);
               }
-            } else if (ASPmonitorList.get(asp_assocname.toString()) == 6) {
+            } else if (ASPmonitorList.get(asp_assocname) == 6) {
               try {
                 sctpMgmt.startAssociation(asp_assocname);
                 ASPmonitorList.remove(asp_assocname);
               } catch (Exception e) {
                 logger.error("Error:", e);
                 e.printStackTrace();
-                ASPmonitorList.put(asp_assocname.toString(), 3);
+                ASPmonitorList.put(asp_assocname, 3);
               }
             } else {
               int counter = 0;
-              counter = ASPmonitorList.get(asp_assocname.toString());
+              counter = ASPmonitorList.get(asp_assocname);
               counter = counter + 1;
-              ASPmonitorList.put(asp_assocname.toString(), counter);
+              ASPmonitorList.put(asp_assocname, counter);
             }
           } else {
             ASPmonitorList.put(asp_assocname, 1);
           }
 
-        } else if (ASPmonitorList.get(asp_assocname.toString()) != null) {
-          if (ASPmonitorList.get(asp_assocname.toString()) == 6) {
+        } else if (ASPmonitorList.get(asp_assocname) != null) {
+          if (ASPmonitorList.get(asp_assocname) == 6) {
             try {
               sctpMgmt.startAssociation(asp_assocname);
               ASPmonitorList.remove(asp_assocname);
             } catch (Exception e) {
               logger.error("Error:", e);
               e.printStackTrace();
-              ASPmonitorList.put(asp_assocname.toString(), 3);
+              ASPmonitorList.put(asp_assocname, 3);
             }
           }
         } else {
-          if (ASPmonitorList.get(asp_assocname.toString()) != null) {
+          if (ASPmonitorList.get(asp_assocname) != null) {
             ASPmonitorList.remove(asp_assocname);
           }
         }
@@ -244,38 +219,36 @@ class MonitoringTask extends TimerTask {
         if (aspcounterout != null && aspcounterout.size() > 0) {
           for (Map.Entry<String, LongValue> entry : aspcounterout.entrySet()) {
             if (entry.getValue().getValue() > 0) {
-              this.monitorLayers.m3uaout = this.monitorLayers.m3uaout + entry.getValue().getValue();
+              this.monitorLayers.m3uaOut = this.monitorLayers.m3uaOut + entry.getValue().getValue();
             }
           }
         }
 
         // M3UA IN Counter
-        Map<String, LongValue> aspcounterin =
-            cprovider.getPacketsPerAssRx(aspf.getAssociation().getName());
-        if (aspcounterin != null && aspcounterin.size() > 0) {
-          for (Map.Entry<String, LongValue> entry : aspcounterin.entrySet()) {
+        Map<String, LongValue> aspCounterIn = cprovider.getPacketsPerAssRx(aspf.getAssociation().getName());
+        if (aspCounterIn != null && aspCounterIn.size() > 0) {
+          for (Map.Entry<String, LongValue> entry : aspCounterIn.entrySet()) {
             if (entry.getValue().getValue() > 0) {
-              this.monitorLayers.m3uain = this.monitorLayers.m3uain + entry.getValue().getValue();
+              this.monitorLayers.m3uaIn = this.monitorLayers.m3uaIn + entry.getValue().getValue();
             }
           }
         }
       }
     }
-    logger.debug("M3UA TX Message counter = " + this.monitorLayers.m3uaout);
-    logger.debug("M3UA RX Message counter = " + this.monitorLayers.m3uain);
+    logger.debug("M3UA TX Message counter = " + this.monitorLayers.m3uaOut);
+    logger.debug("M3UA RX Message counter = " + this.monitorLayers.m3uaIn);
     logger.debug("MTP Payload bytes counter = " + this.monitorLayers.mtp3Bytes);
     log = log + "# TYPE m3ua_traffic counter" + "\n";
     if (!this.monitorLayers.custom) {
       log = log + "m3ua_message_total{component=\"m3ua-metrics\",type=\"transfer-in\"} "
-          + this.monitorLayers.m3uain + "\n";
+          + this.monitorLayers.m3uaIn + "\n";
       log = log + "m3ua_message_total{component=\"m3ua-metrics\",type=\"transfer-out\"} "
-          + this.monitorLayers.m3uaout + "\n";
+          + this.monitorLayers.m3uaOut + "\n";
       log = log + "m3ua_payload_total{component=\"m3ua-metrics\",type=\"transfer-bytes\"} "
           + this.monitorLayers.mtp3Bytes + "\n";
     }
     try {
       fw = new FileWriter(log_file, false);
-      // fw = new FileWriter("/root/jboss-5.1.0.GA/server/default/log/monitor.log");
       bw = new BufferedWriter(fw);
       bw.write(log);
       bw.close();
@@ -284,11 +257,11 @@ class MonitoringTask extends TimerTask {
       logger.error("Failed to write log to file. Exception: " + e1);
       e1.printStackTrace();
     }
-    this.monitorLayers.m3uain = 0;
-    this.monitorLayers.m3uaout = 0;
+    this.monitorLayers.m3uaIn = 0;
+    this.monitorLayers.m3uaOut = 0;
     this.monitorLayers.mtp3Bytes = 0;
   }
-  private String printString(String str){
+  private String printString(String str) {
     if (str == null || str.isEmpty()) return "";
     return str;
   }

@@ -16,11 +16,12 @@ public class BlockingQueue implements QueueInterface {
 
     private String name;
 
-    private List<ChannelMessage> queue = new LinkedList<ChannelMessage>();
+    private List<ChannelMessage> queue = new LinkedList<>();
+
     private int size = 9999;
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     private BlockingQueue(String name) {
@@ -28,7 +29,7 @@ public class BlockingQueue implements QueueInterface {
     }
 
     public static BlockingQueue getInstance(String name) {
-        return instance == null ? new BlockingQueue(name) : instance;
+        return (instance == null) ? new BlockingQueue(name) : instance;
     }
 
     public static synchronized BlockingQueue getInstance(String name, int size) {
@@ -36,33 +37,27 @@ public class BlockingQueue implements QueueInterface {
             instance = new BlockingQueue(name);
             if (size > 0)
                 instance.size = size;
-        } else {
-            if (size > 0) {
-                if (instance.size <= size) {
-                    if (instance.queue.size() >= size)
-                        instance.notifyAll();
-                }
-                instance.size = size;
-            }
+        } else if (size > 0) {
+            if (instance.size <= size &&
+                instance.queue.size() >= size)
+                instance.notifyAll();
+            instance.size = size;
         }
         return instance;
     }
 
     public synchronized void send(ChannelMessage element) {
         try {
-            while (this.queue.size() >= size)
+            while (this.queue.size() >= this.size)
                 wait();
-
             if (this.queue.size() == 0)
                 notifyAll();
-
             this.queue.add(element);
-
-            logger.debug("Sent message tid '" + element.getTransactionId() + "' over queue '" + name +
-                "' by thread '" + Thread.currentThread().getName() + "'");
+            logger.debug("Sent message tid '" + element.getTransactionId() + "' over queue '" + this.name + "' by thread '" +
+                Thread.currentThread().getName() + "'");
         } catch (InterruptedException e) {
-            logger.warn("Sent message tid '" + element.getTransactionId() + "' over queue '" + name +
-                "' by thread '" + Thread.currentThread().getName() + "' was interrupted!", e);
+            logger.warn("Sent message tid '" + element.getTransactionId() + "' over queue '" + this.name + "' by thread '" +
+                Thread.currentThread().getName() + "' was interrupted!", e);
         }
     }
 
@@ -71,19 +66,14 @@ public class BlockingQueue implements QueueInterface {
         try {
             while (this.queue.size() == 0)
                 wait();
-
-            if (this.queue.size() >= size)
+            if (this.queue.size() >= this.size)
                 notifyAll();
-
-            element = (ChannelMessage) this.queue.remove(0);
-
-            logger.debug("Message tid '" + element.getTransactionId() + "' received over queue '" + name +
+            element = this.queue.remove(0);
+            logger.debug("Message tid '" + element.getTransactionId() + "' received over queue '" + this.name +
                 "' by thread '" + Thread.currentThread().getName() + "'");
         } catch (InterruptedException e) {
-            logger.debug("' received over queue '" + name +
-                "' by thread '" + Thread.currentThread().getName() + "' was interrupted!", e);
+            logger.debug("' received over queue '" + this.name + "' by thread '" + Thread.currentThread().getName() + "' was interrupted!", e);
         }
-
         return element;
     }
 }

@@ -18,13 +18,13 @@ public abstract class ChannelHandler implements IChannelHandler {
     protected BlockingQueue queue;
 
     public ChannelHandler(ChannelSettings channelSettings) {
-        queue = QueueInstancePool.getQueueInstance(channelSettings.getName());
+        this.queue = QueueInstancePool.getQueueInstance(channelSettings.getName());
     }
 
     public int sendMessageRequest(ChannelMessage channelMessage) {
         // send message to application throughout queue
         logger.debug(channelMessage.toString());
-        queue.send(channelMessage);
+        this.queue.send(channelMessage);
         return 0;
     }
 
