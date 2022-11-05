@@ -237,6 +237,17 @@ public class SignalingGateway extends Thread {
     SignalingGateway.getInstance().running.set(false);
   }
 
+  public LayerInterface getLayer(String keyLayer) {
+    LayerInterface layerInterface = null;
+    try {
+      if (this.layers.containsKey(keyLayer))
+        layerInterface = this.layers.get(keyLayer);
+    } catch (Exception ex) {
+      logger.error("Error on try to get the " + keyLayer + "layer " + ex.getMessage());
+    }
+    return layerInterface;
+  }
+
   @Override
   public synchronized void start() {
     super.start();
