@@ -24,7 +24,7 @@ public class SgwResource {
 
     public SgwResource(String name, String userDirectory) {
         try {
-            String externalFile = userDirectory + "/" + userDirectory;
+            String externalFile = userDirectory + "/" + name;
             logger.info(String.format("Loading configuration from '%s'", new Object[] { externalFile }));
             File file = new File(externalFile);
             if (file.exists()) {
