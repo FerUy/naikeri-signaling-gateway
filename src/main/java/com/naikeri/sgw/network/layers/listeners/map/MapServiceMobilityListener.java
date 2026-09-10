@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.naikeri.sgw.network.layers.listeners.MapProxyContants;
 import com.naikeri.sgw.api.chn.ChannelMessage;
 import com.naikeri.sgw.api.chn.IChannelHandler;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeModificationRequest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeModificationResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
@@ -247,8 +249,7 @@ public class MapServiceMobilityListener implements MAPServiceMobilityListener {
   @Override
   public void onAnyTimeInterrogationRequest(
       AnyTimeInterrogationRequest anyTimeInterrogationRequest) {
-    ChannelMessage channelMessage =
-        getMessage(anyTimeInterrogationRequest.getMessageType().toString());
+    ChannelMessage channelMessage = getMessage(anyTimeInterrogationRequest.getMessageType().toString());
     channelMessage.setParameter(MapProxyContants.MESSAGE, anyTimeInterrogationRequest);
     logger.info(String.format("%s, %s, [ DialogId = '%d'] ", anyTimeInterrogationRequest.toString(),
         channelMessage.toString(), anyTimeInterrogationRequest.getMAPDialog().getLocalDialogId()));
@@ -258,8 +259,7 @@ public class MapServiceMobilityListener implements MAPServiceMobilityListener {
   @Override
   public void onAnyTimeInterrogationResponse(
       AnyTimeInterrogationResponse anyTimeInterrogationResponse) {
-    ChannelMessage channelMessage =
-        getMessage(anyTimeInterrogationResponse.getMessageType().toString());
+    ChannelMessage channelMessage = getMessage(anyTimeInterrogationResponse.getMessageType().toString());
     channelMessage.setParameter(MapProxyContants.MESSAGE, anyTimeInterrogationResponse);
     logger.info(String.format("%s, %s, [ DialogId = '%d'] ",
         anyTimeInterrogationResponse.toString(), channelMessage.toString(),
@@ -288,6 +288,24 @@ public class MapServiceMobilityListener implements MAPServiceMobilityListener {
     logger.info(String.format("%s, %s, [ DialogId = '%d'] ",
         anyTimeSubscriptionInterrogationResponse.toString(), channelMessage.toString(),
         anyTimeSubscriptionInterrogationResponse.getMAPDialog().getLocalDialogId()));
+    channelHandler.receiveMessageRequest(channelMessage);
+  }
+
+  @Override
+  public void onAnyTimeModificationRequest(AnyTimeModificationRequest anyTimeModificationRequest) {
+    ChannelMessage channelMessage = getMessage(anyTimeModificationRequest.getMessageType().toString());
+    channelMessage.setParameter(MapProxyContants.MESSAGE, anyTimeModificationRequest);
+    logger.info("{}, {}, [ DialogId = '{}'] ", anyTimeModificationRequest, channelMessage,
+        anyTimeModificationRequest.getMAPDialog().getLocalDialogId());
+    channelHandler.receiveMessageRequest(channelMessage);
+  }
+
+  @Override
+  public void onAnyTimeModificationResponse(AnyTimeModificationResponse anyTimeModificationResponse) {
+    ChannelMessage channelMessage = getMessage(anyTimeModificationResponse.getMessageType().toString());
+    channelMessage.setParameter(MapProxyContants.MESSAGE, anyTimeModificationResponse);
+    logger.info("{}, {}, [ DialogId = '{}'] ", anyTimeModificationResponse, channelMessage,
+        anyTimeModificationResponse.getMAPDialog().getLocalDialogId());
     channelHandler.receiveMessageRequest(channelMessage);
   }
 

@@ -10,28 +10,29 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
+        <naikeri.artifactory.url>https://ec2-56-126-119-82.sa-east-1.compute.amazonaws.com/artifactory/libs-release-local</naikeri.artifactory.url>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sctp.version>2.1.0-17</sctp.version>
-        <jss7.version>8.5.0-334</jss7.version>
-        <jdiameter.version>2.0.0-241</jdiameter.version>
-        <guava.version>27.0.1-jre</guava.version>
+        <sctp.version>2.1.0-41</sctp.version>
+        <jss7.version>9.0.0-1559</jss7.version>
+        <jdiameter.version>2.2.0-1019</jdiameter.version>
+        <guava.version>33.4.7-jre</guava.version>
         <commons.version>1.0.0.CR1</commons.version>
-        <slf4j.version>1.7.36</slf4j.version>
+        <slf4j.version>2.0.17</slf4j.version>
     </properties>
 
     <distributionManagement>
         <repository>
-            <id>admin</id>
+            <id>naikeri</id>
             <name>localhost-releases</name>
-            <url>http://ec2-15-229-74-89.sa-east-1.compute.amazonaws.com:8082/artifactory/libs-release-local</url>
+            <url>${naikeri.artifactory.url}</url>
         </repository>
         <snapshotRepository>
-            <id>admin</id>
+            <id>naikeri</id>
             <name>localhost-snapshots</name>
-            <url>http://ec2-15-229-74-89.sa-east-1.compute.amazonaws.com:8082/artifactory/libs-release-local</url>
+            <url>${naikeri.artifactory.url}</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -45,7 +46,7 @@
         <dependency>
             <groupId>com.naikeri.licensor</groupId>
             <artifactId>NaikeriLicensor</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0-4</version>
         </dependency>
 
         <!-- Rate Limiter-->
