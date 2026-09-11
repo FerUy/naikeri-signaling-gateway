@@ -35,8 +35,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 public class MapSupplementaryServiceListener implements MAPServiceSupplementaryListener {
 
-  private static Logger logger = LoggerFactory.getLogger(MapSupplementaryServiceListener.class);
-  private IChannelHandler channelHandler;
+  private static final Logger logger = LoggerFactory.getLogger(MapSupplementaryServiceListener.class);
+  private final IChannelHandler channelHandler;
 
   public MapSupplementaryServiceListener(IChannelHandler channelHandler) {
     this.channelHandler = channelHandler;

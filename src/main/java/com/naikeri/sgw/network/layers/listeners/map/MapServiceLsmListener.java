@@ -22,7 +22,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 public class MapServiceLsmListener implements MAPServiceLsmListener {
 
   private static final Logger logger = LoggerFactory.getLogger(MapServiceLsmListener.class);
-
   private final IChannelHandler channelHandler;
 
   public MapServiceLsmListener(IChannelHandler channelHandler) {
