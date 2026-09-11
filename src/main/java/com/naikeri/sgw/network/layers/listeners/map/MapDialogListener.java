@@ -2,7 +2,7 @@ package com.naikeri.sgw.network.layers.listeners.map;
 
 import java.util.UUID;
 
-import com.naikeri.sgw.network.layers.listeners.MapProxyContants;
+import com.naikeri.sgw.network.layers.listeners.ProxyConstants;
 import com.naikeri.sgw.api.chn.ChannelMessage;
 import com.naikeri.sgw.api.chn.IChannelHandler;
 import org.slf4j.Logger;
@@ -20,9 +20,9 @@ import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 
 public class MapDialogListener implements MAPDialogListener {
 
-  private static Logger logger = LoggerFactory.getLogger(MapDialogListener.class);
+  private static final Logger logger = LoggerFactory.getLogger(MapDialogListener.class);
 
-  private IChannelHandler channelHandler;
+  private final IChannelHandler channelHandler;
 
   public MapDialogListener(IChannelHandler channelHandler) {
     this.channelHandler = channelHandler;
@@ -31,14 +31,14 @@ public class MapDialogListener implements MAPDialogListener {
 
   private ChannelMessage getMessage(String message) {
     ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Map");
-    channelMessage.setParameter(MapProxyContants.MESSAGE_TYPE, message);
+    channelMessage.setParameter(ProxyConstants.MESSAGE_TYPE, message);
     return channelMessage;
   }
 
   @Override
   public void onDialogDelimiter(MAPDialog mapDialog) {
     ChannelMessage channelMessage = getMessage("onDialogDelimiter");
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
 
@@ -46,10 +46,10 @@ public class MapDialogListener implements MAPDialogListener {
   public void onDialogRequest(MAPDialog mapDialog, AddressString addressString,
       AddressString addressString1, MAPExtensionContainer mapExtensionContainer) {
     ChannelMessage channelMessage = getMessage("onDialogRequest");
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
     channelMessage.setParameter("addressString", addressString);
     channelMessage.setParameter("addressString1", addressString1);
-    channelMessage.setParameter(MapProxyContants.MAP_EXTENSION_CONTAINER, mapExtensionContainer);
+    channelMessage.setParameter(ProxyConstants.MAP_EXTENSION_CONTAINER, mapExtensionContainer);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
 
@@ -57,7 +57,7 @@ public class MapDialogListener implements MAPDialogListener {
   public void onDialogRequestEricsson(MAPDialog mapDialog, AddressString addressString,
       AddressString addressString1, AddressString addressString2, AddressString addressString3) {
     ChannelMessage channelMessage = getMessage("onDialogRequestEricsson");
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
     channelMessage.setParameter("addressString", addressString);
     channelMessage.setParameter("addressString1", addressString1);
     channelMessage.setParameter("addressString3", addressString3);
@@ -67,8 +67,8 @@ public class MapDialogListener implements MAPDialogListener {
   @Override
   public void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainer mapExtensionContainer) {
     ChannelMessage channelMessage = getMessage("onDialogAccept");
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
-    channelMessage.setParameter(MapProxyContants.MAP_EXTENSION_CONTAINER, mapExtensionContainer);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.MAP_EXTENSION_CONTAINER, mapExtensionContainer);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
 
@@ -76,9 +76,9 @@ public class MapDialogListener implements MAPDialogListener {
   public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason mapRefuseReason,
       ApplicationContextName applicationContextName, MAPExtensionContainer mapExtensionContainer) {
     ChannelMessage channelMessage = getMessage("onDialogReject");
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
     channelMessage.setParameter("mapRefuseReason", mapRefuseReason);
-    channelMessage.setParameter(MapProxyContants.MAP_EXTENSION_CONTAINER, mapExtensionContainer);
+    channelMessage.setParameter(ProxyConstants.MAP_EXTENSION_CONTAINER, mapExtensionContainer);
     channelMessage.setParameter("applicationContextName", applicationContextName);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
@@ -87,35 +87,33 @@ public class MapDialogListener implements MAPDialogListener {
   public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice mapUserAbortChoice,
       MAPExtensionContainer mapExtensionContainer) {
     ChannelMessage channelMessage = getMessage("onDialogUserAbort");
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
     channelMessage.setParameter("mapUserAbortChoice", mapUserAbortChoice);
-    channelMessage.setParameter(MapProxyContants.MAP_EXTENSION_CONTAINER, mapExtensionContainer);
+    channelMessage.setParameter(ProxyConstants.MAP_EXTENSION_CONTAINER, mapExtensionContainer);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
 
   @Override
-  public void onDialogProviderAbort(MAPDialog mapDialog,
-      MAPAbortProviderReason mapAbortProviderReason, MAPAbortSource mapAbortSource,
+  public void onDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason mapAbortProviderReason, MAPAbortSource mapAbortSource,
       MAPExtensionContainer mapExtensionContainer) {
     ChannelMessage channelMessage = getMessage("onDialogProviderAbort");
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
     channelMessage.setParameter("mapAbortSource", mapAbortSource);
-    channelMessage.setParameter(MapProxyContants.MAP_EXTENSION_CONTAINER, mapExtensionContainer);
+    channelMessage.setParameter(ProxyConstants.MAP_EXTENSION_CONTAINER, mapExtensionContainer);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
 
   @Override
   public void onDialogClose(MAPDialog mapDialog) {
-    ChannelMessage channelMessage = getMessage(MapProxyContants.ON_DIALOG_CLOSE);
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
+    ChannelMessage channelMessage = getMessage(ProxyConstants.ON_DIALOG_CLOSE);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
 
   @Override
-  public void onDialogNotice(MAPDialog mapDialog,
-      MAPNoticeProblemDiagnostic mapNoticeProblemDiagnostic) {
+  public void onDialogNotice(MAPDialog mapDialog, MAPNoticeProblemDiagnostic mapNoticeProblemDiagnostic) {
     ChannelMessage channelMessage = getMessage("onDialogNotice");
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
     channelMessage.setParameter("mapNoticeProblemDiagnostic", mapNoticeProblemDiagnostic);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
@@ -123,14 +121,14 @@ public class MapDialogListener implements MAPDialogListener {
   @Override
   public void onDialogRelease(MAPDialog mapDialog) {
     ChannelMessage channelMessage = getMessage("onDialogRelease");
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
 
   @Override
   public void onDialogTimeout(MAPDialog mapDialog) {
-    ChannelMessage channelMessage = getMessage(MapProxyContants.ON_DIALOG_TIMEOUT);
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
+    ChannelMessage channelMessage = getMessage(ProxyConstants.ON_DIALOG_TIMEOUT);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
 }

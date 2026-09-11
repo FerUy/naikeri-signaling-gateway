@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.naikeri.sgw.api.chn.ChannelMessage;
 import com.naikeri.sgw.api.chn.IChannelHandler;
-import com.naikeri.sgw.network.layers.listeners.MapProxyContants;
+import com.naikeri.sgw.network.layers.listeners.ProxyConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
@@ -21,9 +21,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
 public class MapServiceLsmListener implements MAPServiceLsmListener {
 
-  private static Logger logger = LoggerFactory.getLogger(MapServiceLsmListener.class);
+  private static final Logger logger = LoggerFactory.getLogger(MapServiceLsmListener.class);
 
-  private IChannelHandler channelHandler;
+  private final IChannelHandler channelHandler;
 
   public MapServiceLsmListener(IChannelHandler channelHandler) {
     logger.debug("MapServiceLsmListener running");
@@ -32,100 +32,65 @@ public class MapServiceLsmListener implements MAPServiceLsmListener {
 
   private ChannelMessage getMessage(String messagetype) {
     ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Map");
-    channelMessage.setParameter(MapProxyContants.MESSAGE_TYPE, messagetype);
+    channelMessage.setParameter(ProxyConstants.MESSAGE_TYPE, messagetype);
     return channelMessage;
   }
 
   @Override
-  public void onProvideSubscriberLocationRequest(
-      ProvideSubscriberLocationRequest provideSubscriberLocationRequest) {
-    ChannelMessage channelMessage =
-        getMessage(provideSubscriberLocationRequest.getMessageType().toString());
-    channelMessage.setParameter(MapProxyContants.MESSAGE, provideSubscriberLocationRequest);
-    logger.info(String.format("%s, %s, [ DialogId = '%d'] ",
-        provideSubscriberLocationRequest.toString(), channelMessage.toString(),
-        provideSubscriberLocationRequest.getMAPDialog().getLocalDialogId()));
+  public void onMAPMessage(MAPMessage mapMessage) {
+    ChannelMessage channelMessage = getMessage("onMAPMessage");
+    channelMessage.setParameter("mapmessage", mapMessage);
     channelHandler.receiveMessageRequest(channelMessage);
   }
 
   @Override
-  public void onProvideSubscriberLocationResponse(
-      ProvideSubscriberLocationResponse provideSubscriberLocationResponse) {
-    ChannelMessage channelMessage =
-        getMessage(provideSubscriberLocationResponse.getMessageType().toString());
-    channelMessage.setParameter(MapProxyContants.MESSAGE, provideSubscriberLocationResponse);
-    logger.info(String.format("%s, %s, [ DialogId = '%d'] ",
-        provideSubscriberLocationResponse.toString(), channelMessage.toString(),
-        provideSubscriberLocationResponse.getMAPDialog().getLocalDialogId()));
-    channelHandler.receiveMessageRequest(channelMessage);
+  public void onProvideSubscriberLocationRequest(ProvideSubscriberLocationRequest provideSubscriberLocationRequest) {
+    sendToChannel(provideSubscriberLocationRequest);
   }
 
   @Override
-  public void onSubscriberLocationReportRequest(
-      SubscriberLocationReportRequest subscriberLocationReportRequest) {
-    ChannelMessage channelMessage =
-        getMessage(subscriberLocationReportRequest.getMessageType().toString());
-    channelMessage.setParameter(MapProxyContants.MESSAGE, subscriberLocationReportRequest);
-    logger.info(String.format("%s, %s, [ DialogId = '%d'] ",
-        subscriberLocationReportRequest.toString(), channelMessage.toString(),
-        subscriberLocationReportRequest.getMAPDialog().getLocalDialogId()));
-    channelHandler.receiveMessageRequest(channelMessage);
+  public void onProvideSubscriberLocationResponse(ProvideSubscriberLocationResponse provideSubscriberLocationResponse) {
+    sendToChannel(provideSubscriberLocationResponse);
   }
 
   @Override
-  public void onSubscriberLocationReportResponse(
-      SubscriberLocationReportResponse subscriberLocationReportResponse) {
-    ChannelMessage channelMessage =
-        getMessage(subscriberLocationReportResponse.getMessageType().toString());
-    channelMessage.setParameter(MapProxyContants.MESSAGE, subscriberLocationReportResponse);
-    logger.info(String.format("%s, %s, [ DialogId = '%d'] ",
-        subscriberLocationReportResponse.toString(), channelMessage.toString(),
-        subscriberLocationReportResponse.getMAPDialog().getLocalDialogId()));
-    channelHandler.receiveMessageRequest(channelMessage);
+  public void onSubscriberLocationReportRequest(SubscriberLocationReportRequest subscriberLocationReportRequest) {
+    sendToChannel(subscriberLocationReportRequest);
   }
 
   @Override
-  public void onSendRoutingInfoForLCSRequest(
-      SendRoutingInfoForLCSRequest sendRoutingInfoForLCSRequest) {
-    ChannelMessage channelMessage =
-        getMessage(sendRoutingInfoForLCSRequest.getMessageType().toString());
-    channelMessage.setParameter(MapProxyContants.MESSAGE, sendRoutingInfoForLCSRequest);
-    logger.info(String.format("%s, %s, [ DialogId = '%d'] ",
-        sendRoutingInfoForLCSRequest.toString(), channelMessage.toString(),
-        sendRoutingInfoForLCSRequest.getMAPDialog().getLocalDialogId()));
-    channelHandler.receiveMessageRequest(channelMessage);
+  public void onSubscriberLocationReportResponse(SubscriberLocationReportResponse subscriberLocationReportResponse) {
+    sendToChannel(subscriberLocationReportResponse);
   }
 
   @Override
-  public void onSendRoutingInfoForLCSResponse(
-      SendRoutingInfoForLCSResponse sendRoutingInfoForLCSResponse) {
-    ChannelMessage channelMessage =
-        getMessage(sendRoutingInfoForLCSResponse.getMessageType().toString());
-    channelMessage.setParameter(MapProxyContants.MESSAGE, sendRoutingInfoForLCSResponse);
-    logger.info(String.format("%s, %s, [ DialogId = '%d'] ",
-        sendRoutingInfoForLCSResponse.toString(), channelMessage.toString(),
-        sendRoutingInfoForLCSResponse.getMAPDialog().getLocalDialogId()));
-    channelHandler.receiveMessageRequest(channelMessage);
+  public void onSendRoutingInfoForLCSRequest(SendRoutingInfoForLCSRequest sendRoutingInfoForLCSRequest) {
+    sendToChannel(sendRoutingInfoForLCSRequest);
+  }
+
+  @Override
+  public void onSendRoutingInfoForLCSResponse(SendRoutingInfoForLCSResponse sendRoutingInfoForLCSResponse) {
+    sendToChannel(sendRoutingInfoForLCSResponse);
   }
 
   @Override
   public void onErrorComponent(MAPDialog mapDialog, Long invokeId, MAPErrorMessage mapErrorMessage) {
-    ChannelMessage channelMessage = getMessage(MapProxyContants.ON_ERROR_COMPONENT);
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
-    channelMessage.setParameter(MapProxyContants.INVOKE_ID, invokeId);
-    channelMessage.setParameter(MapProxyContants.MAP_ERROR_MESSAGE, mapErrorMessage);
+    ChannelMessage channelMessage = getMessage(ProxyConstants.ON_ERROR_COMPONENT);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.INVOKE_ID, invokeId);
+    channelMessage.setParameter(ProxyConstants.MAP_ERROR_MESSAGE, mapErrorMessage);
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
 
   @Override
-    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean b) {
-        ChannelMessage channelMessage = getMessage(MapProxyContants.ON_REJECT_COMPONENT);
-    channelMessage.setParameter(MapProxyContants.DIALOG, mapDialog);
-    channelMessage.setParameter(MapProxyContants.INVOKE_ID, invokeId);
-    channelMessage.setParameter(MapProxyContants.PROBLEM, problem);
-    channelMessage.setParameter(MapProxyContants.LOCAL_ORIGINATED, b);
-        this.channelHandler.receiveMessageRequest(channelMessage);
-    }
+  public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean b) {
+    ChannelMessage channelMessage = getMessage(ProxyConstants.ON_REJECT_COMPONENT);
+    channelMessage.setParameter(ProxyConstants.DIALOG, mapDialog);
+    channelMessage.setParameter(ProxyConstants.INVOKE_ID, invokeId);
+    channelMessage.setParameter(ProxyConstants.PROBLEM, problem);
+    channelMessage.setParameter(ProxyConstants.LOCAL_ORIGINATED, b);
+    this.channelHandler.receiveMessageRequest(channelMessage);
+  }
 
   @Override
   public void onInvokeTimeout(MAPDialog mapDialog, Long aLong) {
@@ -135,10 +100,11 @@ public class MapServiceLsmListener implements MAPServiceLsmListener {
     this.channelHandler.receiveMessageRequest(channelMessage);
   }
 
-  @Override
-  public void onMAPMessage(MAPMessage mapMessage) {
-    ChannelMessage channelMessage = getMessage("onMAPMessage");
-    channelMessage.setParameter("mapmessage", mapMessage);
+  private void sendToChannel(MAPMessage message) {
+    ChannelMessage channelMessage = getMessage(message.getMessageType().toString());
+    channelMessage.setParameter(ProxyConstants.MESSAGE, message);
+    logger.info("{}, {}, [ DialogId = '{}'] ", message, channelMessage,
+        message.getMAPDialog().getLocalDialogId());
     channelHandler.receiveMessageRequest(channelMessage);
   }
 }

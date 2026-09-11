@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 
-public class MapProxyContants {
-  private MapProxyContants() {
+public class ProxyConstants {
+  private ProxyConstants() {
   }
 
   /**

@@ -2,6 +2,7 @@ package com.naikeri.sgw.network.layers.listeners.cap;
 
 import com.naikeri.sgw.api.chn.ChannelMessage;
 import com.naikeri.sgw.api.chn.IChannelHandler;
+import com.naikeri.sgw.network.layers.listeners.ProxyConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
@@ -22,9 +23,9 @@ import java.util.UUID;
 
 public class CapSmsListener implements CAPServiceSmsListener {
 
-  private static Logger logger = LoggerFactory.getLogger(CapSmsListener.class);
-  private String layerName;
-  private IChannelHandler channelHandler;
+  private static final Logger logger = LoggerFactory.getLogger(CapSmsListener.class);
+  private final String layerName;
+  private final IChannelHandler channelHandler;
 
   public CapSmsListener(IChannelHandler channelHandler, String layerName) {
     this.channelHandler = channelHandler;
@@ -49,68 +50,42 @@ public class CapSmsListener implements CAPServiceSmsListener {
 
   @Override
   public void onConnectSMSRequest(ConnectSMSRequest connectSMSRequest) {
-    ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Cap");
-    channelMessage.setParameter("message", connectSMSRequest);
-    channelMessage.setParameter("invokeId", connectSMSRequest.getInvokeId());
-    this.channelHandler.receiveMessageRequest(channelMessage);
+    sendToChannel(connectSMSRequest);
   }
 
   @Override
   public void onEventReportSMSRequest(EventReportSMSRequest eventReportSMSRequest) {
-    ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Cap");
-    channelMessage.setParameter("message", eventReportSMSRequest);
-    channelMessage.setParameter("invokeId", eventReportSMSRequest.getInvokeId());
-    this.channelHandler.receiveMessageRequest(channelMessage);
+    sendToChannel(eventReportSMSRequest);
   }
 
   @Override
-  public void onFurnishChargingInformationSMSRequest(
-      FurnishChargingInformationSMSRequest furnishChargingInformationSMSRequest) {
-    ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Cap");
-    channelMessage.setParameter("message", furnishChargingInformationSMSRequest);
-    channelMessage.setParameter("invokeId", furnishChargingInformationSMSRequest.getInvokeId());
-    this.channelHandler.receiveMessageRequest(channelMessage);
+  public void onFurnishChargingInformationSMSRequest(FurnishChargingInformationSMSRequest furnishChargingInformationSMSRequest) {
+    sendToChannel(furnishChargingInformationSMSRequest);
   }
 
   @Override
   public void onInitialDPSMSRequest(InitialDPSMSRequest initialDPSMSRequest) {
-    ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Cap");
-    channelMessage.setParameter("message", initialDPSMSRequest);
-    channelMessage.setParameter("invokeId", initialDPSMSRequest.getInvokeId());
-    this.channelHandler.receiveMessageRequest(channelMessage);
+    sendToChannel(initialDPSMSRequest);
   }
 
   @Override
   public void onReleaseSMSRequest(ReleaseSMSRequest releaseSMSRequest) {
-    ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Cap");
-    channelMessage.setParameter("message", releaseSMSRequest);
-    channelMessage.setParameter("invokeId", releaseSMSRequest.getInvokeId());
-    this.channelHandler.receiveMessageRequest(channelMessage);
+    sendToChannel(releaseSMSRequest);
   }
 
   @Override
-  public void onRequestReportSMSEventRequest(
-      RequestReportSMSEventRequest requestReportSMSEventRequest) {
-    ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Cap");
-    channelMessage.setParameter("message", requestReportSMSEventRequest);
-    channelMessage.setParameter("invokeId", requestReportSMSEventRequest.getInvokeId());
-    this.channelHandler.receiveMessageRequest(channelMessage);
+  public void onRequestReportSMSEventRequest(RequestReportSMSEventRequest requestReportSMSEventRequest) {
+    sendToChannel(requestReportSMSEventRequest);
   }
 
   @Override
   public void onResetTimerSMSRequest(ResetTimerSMSRequest resetTimerSMSRequest) {
-    ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Cap");
-    channelMessage.setParameter("message", resetTimerSMSRequest);
-    channelMessage.setParameter("invokeId", resetTimerSMSRequest.getInvokeId());
-    this.channelHandler.receiveMessageRequest(channelMessage);
+    sendToChannel(resetTimerSMSRequest);
   }
 
   @Override
   public void onContinueSMSRequest(ContinueSMSRequest continueSMSRequest) {
-    ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Cap");
-    channelMessage.setParameter("message", continueSMSRequest);
-    channelMessage.setParameter("invokeId", continueSMSRequest.getInvokeId());
-    this.channelHandler.receiveMessageRequest(channelMessage);
+    sendToChannel(continueSMSRequest);
   }
 
   @Override
@@ -138,5 +113,12 @@ public class CapSmsListener implements CAPServiceSmsListener {
     channelMessage.setParameter("dialog", capDialog);
     channelMessage.setParameter("invokeId", invokeId);
     this.channelHandler.receiveMessageRequest(channelMessage);
+  }
+
+  private void sendToChannel(CAPMessage message) {
+    ChannelMessage channelMessage = new ChannelMessage(UUID.randomUUID().toString(), "Cap");
+    channelMessage.setParameter(ProxyConstants.MESSAGE, message);
+    channelMessage.setParameter(ProxyConstants.INVOKE_ID, message.getInvokeId());
+    channelHandler.receiveMessageRequest(channelMessage);
   }
 }
