@@ -2,72 +2,48 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JDK 11'
-		maven 'Maven_3.8.5'
-	}
-
-    parameters {
-        string(name: 'SGW_MAJOR_VERSION', defaultValue: '2.1.1', description: 'The major version for naikeri-signaling-gateway-core')
+        jdk 'jdk-11'
+        maven 'maven-3.9.12'
     }
 
-	stages {
-        stage("Set Version") {
-          steps {
-			echo "Setting version to ${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER} ..."
-            sh "mvn versions:set -DnewVersion=${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER}"
-            echo "Setting version to ${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER} completed"
-          }
+    parameters {
+        string(name: 'SGW_MAJOR_VERSION', defaultValue: '2.2.0', description: 'The major version for naikeri-signaling-gateway-core')
+    }
+
+    stages {
+        stage('Set Version') {
+            steps {
+                echo "Setting version to ${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER}"
+                sh "mvn versions:set -DnewVersion=${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER} -DgenerateBackupPoms=false"
+            }
         }
 
-		stage("Build") {
-			steps {
-				echo "Building application..."
-				script {
-           			currentBuild.displayName = "#${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER}"
-           			currentBuild.description = "naikeri-signalling-gateway-core"
-       	        }
-		  	    sh "mvn clean install -DskipTests"
-
-			    echo "Maven build completed."
-			}
-		}
-
-		stage("Release") {
+        stage('Build') {
             steps {
-                withAnt(installation: 'Ant_1.10.12') {
-        			echo "Building a released version"
-                    dir('release') {
-                        sh "ant -f build.xml -Dsgw.release.version=${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER}"
-         			}
-        		}
-        	}
+                script {
+                    currentBuild.displayName = "#${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER}"
+                    currentBuild.description = "naikeri-signaling-gateway-core"
+                }
+                sh "mvn clean install"
+            }
         }
 
         stage('Save Artifacts') {
             steps {
-                echo "Archiving Naikeri-Signaling-Gateway-Core-${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER}"
-                archiveArtifacts artifacts: "release/Naikeri-Signaling-Gateway-Core-*.zip", followSymlinks: false, onlyIfSuccessful: true
+                archiveArtifacts artifacts: "target/naikeri-signaling-gateway-core-${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER}.jar", followSymlinks: false, onlyIfSuccessful: true
             }
         }
 
         stage('Push to jFrog') {
-            when {anyOf {branch 'master'; branch 'release'}}
-                 steps {
-                 sh 'mvn deploy -DskipTests'
-           }
+            when { anyOf { branch 'master'; branch 'release' } }
+            steps {
+                sh "mvn deploy -DskipTests"
+            }
         }
     }
 
-	post {
-		success {
-			echo "SUCCESSFULLY built naikeri-signalling-gateway-core"
-		}
-		failure {
-			echo "Build of naikeri-signalling-gateway-core FAILED."
-		}
-		always {
-             sh 'rm -rf release/checkout'
-             sh 'rm -rf release/target'
-        }
-	}
+    post {
+        success { echo "Successfully built naikeri-signaling-gateway-core ${params.SGW_MAJOR_VERSION}-${BUILD_NUMBER}" }
+        failure { echo "Building naikeri-signaling-gateway-core failed." }
+    }
 }
