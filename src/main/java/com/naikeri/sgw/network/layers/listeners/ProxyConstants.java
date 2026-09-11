@@ -3,10 +3,13 @@ package com.naikeri.sgw.network.layers.listeners;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorCode;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 
 public class ProxyConstants {
+
   private ProxyConstants() {
   }
 
@@ -33,7 +36,6 @@ public class ProxyConstants {
   public static final String LOCAL_ORIGINATED = "localOriginated";
   public static final String MAP_EXTENSION_CONTAINER = "mapExtensionContainer";
   public static final String ON_DIALOG_CLOSE = "onDialogClose";
-  private static final Map<Long, String> errorToStringMap;
   public static final String CAP_ERROR_MESSAGE = "capErrorMessage";
   public static final String CAP_LAYER_NAME = "layerName";
   public static final String ON_CAP_MESSAGE = "on_CapMessage";
@@ -43,79 +45,103 @@ public class ProxyConstants {
   public static final String TCAP_MESSAGE = "TCAP_MESSAGE";
   public static final String TCAP_MESSAGE_DIALOG = "TCAP_MESSAGE_DIALOG";
 
+  private static final Map<Long, String> mapErrorNames;
+
   static {
-    errorToStringMap = new HashMap<>();
-    errorToStringMap.put(1L, "Unknown Subscriber");
-    errorToStringMap.put(2L, "Unknown Base Station");
-    errorToStringMap.put(3L, "Unknown MSC");
-    errorToStringMap.put(5L, "Unidentified Subscriber");
-    errorToStringMap.put(6L, "Absent SubscriberSM");
-    errorToStringMap.put(7L, "Unknown Equipment");
-    errorToStringMap.put(8L, "Roaming NotAllowed");
-    errorToStringMap.put(9L, "Illegal Subscriber");
-    errorToStringMap.put(10L, "Bearer Service Not Provisioned");
-    errorToStringMap.put(11L, "Teleservice Not Provisioned");
-    errorToStringMap.put(12L, "Illegal Equipment");
-    errorToStringMap.put(13L, "Call Barred");
-    errorToStringMap.put(14L, "Forwarding Violation");
-    errorToStringMap.put(15L, "CUG Reject");
-    errorToStringMap.put(16L, "Illegal SSOperation");
-    errorToStringMap.put(17L, "SS Error Status");
-    errorToStringMap.put(18L, "SS Not Available");
-    errorToStringMap.put(19L, "SS Subscription Violation");
-    errorToStringMap.put(20L, "SS Incompatibility");
-    errorToStringMap.put(21L, "Facility Not Supported");
-    errorToStringMap.put(22L, "Ongoing GroupCall");
-    errorToStringMap.put(23L, "Invalid Target Base Station");
-    errorToStringMap.put(24L, "No Radio Resource Available");
-    errorToStringMap.put(25L, "No Handover Number Available");
-    errorToStringMap.put(26L, "Subsequent Handover Failure");
-    errorToStringMap.put(27L, "Absent Subscriber");
-    errorToStringMap.put(28L, "Incompatible Terminal");
-    errorToStringMap.put(29L, "Short Term Denial");
-    errorToStringMap.put(30L, "Long Term Denial");
-    errorToStringMap.put(31L, "Subscriber Busy For MTSMS");
-    errorToStringMap.put(32L, "SM Delivery Failure");
-    errorToStringMap.put(33L, "Message Waiting List Full");
-    errorToStringMap.put(34L, "System Failure");
-    errorToStringMap.put(35L, "Data Missing");
-    errorToStringMap.put(36L, "Unexpected DataValue");
-    errorToStringMap.put(37L, "PW Registration Failure");
-    errorToStringMap.put(38L, "Negative PW Check");
-    errorToStringMap.put(39L, "No Roaming Number Available");
-    errorToStringMap.put(40L, "Tracing Buffer Full");
-    errorToStringMap.put(42L, "Target Cell Outside Group Call Area");
-    errorToStringMap.put(43L, "Number Of PW Attempts Violation");
-    errorToStringMap.put(44L, "Number Changed");
-    errorToStringMap.put(45L, "Busy Subscriber");
-    errorToStringMap.put(46L, "No Subscriber Reply");
-    errorToStringMap.put(47L, "Forwarding Failed");
-    errorToStringMap.put(48L, "OR Not Allowed");
-    errorToStringMap.put(49L, "ATI Not Allowed");
-    errorToStringMap.put(50L, "No Group Call Number Available");
-    errorToStringMap.put(51L, "Resource Limitation");
-    errorToStringMap.put(52L, "Unauthorized Requesting Network");
-    errorToStringMap.put(53L, "Unauthorized LCS Client");
-    errorToStringMap.put(54L, "Position Method Failure");
-    errorToStringMap.put(58L, "Unknownor Unreachable LCS Client");
-    errorToStringMap.put(59L, "MM Event Not Supported");
-    errorToStringMap.put(60L, "ATSI Not Allowed");
-    errorToStringMap.put(61L, "ATM Not Allowed");
-    errorToStringMap.put(62L, "Information Not Available");
-    errorToStringMap.put(71L, "Unknown Alphabet");
-    errorToStringMap.put(72L, "USSD Busy");
-    errorToStringMap.put(-1L, "System Failure");
+    mapErrorNames = new HashMap<>();
+    mapErrorNames.put(1L, "Unknown Subscriber");
+    mapErrorNames.put(2L, "Unknown Base Station");
+    mapErrorNames.put(3L, "Unknown MSC");
+    mapErrorNames.put(5L, "Unidentified Subscriber");
+    mapErrorNames.put(6L, "Absent Subscriber SM");
+    mapErrorNames.put(7L, "Unknown Equipment");
+    mapErrorNames.put(8L, "Roaming Not Allowed");
+    mapErrorNames.put(9L, "Illegal Subscriber");
+    mapErrorNames.put(10L, "Bearer Service Not Provisioned");
+    mapErrorNames.put(11L, "Teleservice Not Provisioned");
+    mapErrorNames.put(12L, "Illegal Equipment");
+    mapErrorNames.put(13L, "Call Barred");
+    mapErrorNames.put(14L, "Forwarding Violation");
+    mapErrorNames.put(15L, "CUG Reject");
+    mapErrorNames.put(16L, "Illegal SS Operation");
+    mapErrorNames.put(17L, "SS Error Status");
+    mapErrorNames.put(18L, "SS Not Available");
+    mapErrorNames.put(19L, "SS Subscription Violation");
+    mapErrorNames.put(20L, "SS Incompatibility");
+    mapErrorNames.put(21L, "Facility Not Supported");
+    mapErrorNames.put(22L, "Ongoing Group Call");
+    mapErrorNames.put(23L, "Invalid Target Base Station");
+    mapErrorNames.put(24L, "No Radio Resource Available");
+    mapErrorNames.put(25L, "No Handover Number Available");
+    mapErrorNames.put(26L, "Subsequent Handover Failure");
+    mapErrorNames.put(27L, "Absent Subscriber");
+    mapErrorNames.put(28L, "Incompatible Terminal");
+    mapErrorNames.put(29L, "Short Term Denial");
+    mapErrorNames.put(30L, "Long Term Denial");
+    mapErrorNames.put(31L, "Subscriber Busy For MT SMS");
+    mapErrorNames.put(32L, "SM Delivery Failure");
+    mapErrorNames.put(33L, "Message Waiting List Full");
+    mapErrorNames.put(34L, "System Failure");
+    mapErrorNames.put(35L, "Data Missing");
+    mapErrorNames.put(36L, "Unexpected Data Value");
+    mapErrorNames.put(37L, "PW Registration Failure");
+    mapErrorNames.put(38L, "Negative PW Check");
+    mapErrorNames.put(39L, "No Roaming Number Available");
+    mapErrorNames.put(40L, "Tracing Buffer Full");
+    mapErrorNames.put(42L, "Target Cell Outside Group Call Area");
+    mapErrorNames.put(43L, "Number Of PW Attempts Violation");
+    mapErrorNames.put(44L, "Number Changed");
+    mapErrorNames.put(45L, "Busy Subscriber");
+    mapErrorNames.put(46L, "No Subscriber Reply");
+    mapErrorNames.put(47L, "Forwarding Failed");
+    mapErrorNames.put(48L, "OR Not Allowed");
+    mapErrorNames.put(49L, "ATI Not Allowed");
+    mapErrorNames.put(50L, "No Group Call Number Available");
+    mapErrorNames.put(51L, "Resource Limitation");
+    mapErrorNames.put(52L, "Unauthorized Requesting Network");
+    mapErrorNames.put(53L, "Unauthorized LCS Client");
+    mapErrorNames.put(54L, "Position Method Failure");
+    mapErrorNames.put(58L, "Unknown or Unreachable LCS Client");
+    mapErrorNames.put(59L, "MM Event Not Supported");
+    mapErrorNames.put(60L, "ATSI Not Allowed");
+    mapErrorNames.put(61L, "ATM Not Allowed");
+    mapErrorNames.put(62L, "Information Not Available");
+    mapErrorNames.put(71L, "Unknown Alphabet");
+    mapErrorNames.put(72L, "USSD Busy");
+  }
+
+  private static final Map<Long, String> capErrorNames;
+
+  static {
+    capErrorNames = new HashMap<>();
+    capErrorNames.put((long) CAPErrorCode.canceled, "Canceled");
+    capErrorNames.put((long) CAPErrorCode.cancelFailed, "Cancel Failed");
+    capErrorNames.put((long) CAPErrorCode.eTCFailed, "ETC Failed");
+    capErrorNames.put((long) CAPErrorCode.improperCallerResponse, "Improper Caller Response");
+    capErrorNames.put((long) CAPErrorCode.missingCustomerRecord, "Missing Customer Record");
+    capErrorNames.put((long) CAPErrorCode.missingParameter, "Missing Parameter");
+    capErrorNames.put((long) CAPErrorCode.parameterOutOfRange, "Parameter Out Of Range");
+    capErrorNames.put((long) CAPErrorCode.requestedInfoError, "Requested Info Error");
+    capErrorNames.put((long) CAPErrorCode.systemFailure, "System Failure");
+    capErrorNames.put((long) CAPErrorCode.taskRefused, "Task Refused");
+    capErrorNames.put((long) CAPErrorCode.unavailableResource, "Unavailable Resource");
+    capErrorNames.put((long) CAPErrorCode.unexpectedComponentSequence, "Unexpected Component Sequence");
+    capErrorNames.put((long) CAPErrorCode.unexpectedDataValue, "Unexpected Data Value");
+    capErrorNames.put((long) CAPErrorCode.unexpectedParameter, "Unexpected Parameter");
+    capErrorNames.put((long) CAPErrorCode.unknownLegID, "Unknown Leg ID");
+    capErrorNames.put((long) CAPErrorCode.unknownPDPID, "Unknown PDP ID");
+    capErrorNames.put((long) CAPErrorCode.unknownCSID, "Unknown CS ID");
   }
 
   public static String getMapErrorCodeToString(MAPErrorMessage mapErrorMessage) {
-    long ecode = Optional.ofNullable(mapErrorMessage).map(MAPErrorMessage::getErrorCode)
-        .map(Long::longValue).orElse(-1L);
-    return errorToStringMap.get(ecode);
+    return Optional.ofNullable(mapErrorMessage).map(MAPErrorMessage::getErrorCode)
+        .map(code -> mapErrorNames.getOrDefault(code, "Unknown MAP Error " + code))
+        .orElse("No MAP Error Code");
   }
 
   public static String getCapErrorCodeToString(CAPErrorMessage capErrorMessage) {
-    long ecode = Optional.ofNullable(capErrorMessage).map(CAPErrorMessage::getErrorCode)
-        .map(Long::longValue).orElse(-1L);
-    return errorToStringMap.get(ecode);
+    return Optional.ofNullable(capErrorMessage).map(CAPErrorMessage::getErrorCode)
+        .map(code -> capErrorNames.getOrDefault(code, "Unknown CAP Error " + code))
+        .orElse("No CAP Error Code");
   }
 }
