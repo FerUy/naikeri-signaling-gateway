@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sctp.version>2.1.0-41</sctp.version>
         <jss7.version>9.0.0-1559</jss7.version>
-        <jdiameter.version>2.2.0-1019</jdiameter.version>
+        <jdiameter.version>2.2.0-1023</jdiameter.version>
         <guava.version>33.4.7-jre</guava.version>
         <commons.version>1.0.0.CR1</commons.version>
         <slf4j.version>2.0.17</slf4j.version>
