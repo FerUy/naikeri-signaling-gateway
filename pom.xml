@@ -206,6 +206,26 @@
             <groupId>org.mobicents.diameter</groupId>
             <artifactId>restcomm-diameter-mux-jar</artifactId>
             <version>${jdiameter.version}</version>
+            <exclusions>
+                <!-- DiameterStackMultiplexer extends JBoss AS 5's ServiceMBeanSupport, which drags in the
+                     microcontainer, deployers, AOP and VFS trees. Nothing here loads the multiplexer: the
+                     only class used from this jar is AvpDictionary. -->
+                <exclusion>
+                    <groupId>org.jboss.jbossas</groupId>
+                    <artifactId>jboss-as-system-jmx</artifactId>
+                </exclusion>
+                <!-- No datasource or cluster is configured in any consumer, so the stack uses the in-memory
+                     SessionDatasourceImpl from jdiameter-impl. These two brought the restcomm-cluster
+                     timers/core/cache chain, JBoss Cache and log4j 1.2.14 with them. -->
+                <exclusion>
+                    <groupId>org.mobicents.diameter</groupId>
+                    <artifactId>jdiameter-ha-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mobicents.diameter</groupId>
+                    <artifactId>jdiameter-ha-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
