@@ -35,9 +35,12 @@ public interface IChannelHandler {
     int sendMessageResponse(ChannelMessage channelMessage);
 
     /**
-     * Send channel unknown message from the application back to the channel
+     * A realm arrived that the local peer does not know. Only the Diameter layer calls this, so
+     * applications that proxy SS7 alone inherit the empty implementation and need not write a stub.
      * @param realm IRealm
      */
-    void onReceiveUnknownRealm(IRealm realm);
+    default void onReceiveUnknownRealm(IRealm realm) {
+        // nothing to do unless the application keeps realms
+    }
 
 }
