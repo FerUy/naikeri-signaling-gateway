@@ -3,6 +3,7 @@ package com.naikeri.sgw.impl.settings.sccp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public class SccpServiceAccessPoint {
     return String.format("[<%d>]: OPC = %d, NI = %d, networkId = %d, Digits = %s, mtp3Id = %d", id, opc, ni, networkId, localGtDigits, mtp3Id);
   }
 
-  private Map<String, SccpMtp3Destination> mtp3DestinationMap = new HashMap<String, SccpMtp3Destination>();
+  private Map<String, SccpMtp3Destination> mtp3DestinationMap = new LinkedHashMap<String, SccpMtp3Destination>();
 
   public SccpServiceAccessPoint(int id, int mtp3Id, int opc, int ni, int networkId,
       String localGtDigits) {

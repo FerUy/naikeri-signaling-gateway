@@ -2,6 +2,7 @@ package com.naikeri.sgw.impl.settings.sccp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import com.naikeri.sgw.api.network.LayerType;
@@ -23,13 +24,13 @@ public class SccpSettings implements LayerSettingsInterface {
   private int id;
   private String m3uaName;
   private boolean enabled;
-  private Map<String, SccpRemoteSpcSettings> remoteSpcMap = new HashMap<String, SccpRemoteSpcSettings>();
-  private Map<String, SccpRemoteSubSystemNumber> remoteSSNMap = new HashMap<String, SccpRemoteSubSystemNumber>();
-  private Map<String, SccpServiceAccessPoint> serviceAccessPointsMap = new HashMap<String, SccpServiceAccessPoint>();
+  private Map<String, SccpRemoteSpcSettings> remoteSpcMap = new LinkedHashMap<String, SccpRemoteSpcSettings>();
+  private Map<String, SccpRemoteSubSystemNumber> remoteSSNMap = new LinkedHashMap<String, SccpRemoteSubSystemNumber>();
+  private Map<String, SccpServiceAccessPoint> serviceAccessPointsMap = new LinkedHashMap<String, SccpServiceAccessPoint>();
   // private Map<String, SccpMtp3Destination> Mtp3DestinationsMap = new HashMap<String, SccpMtp3Destination>()
-  private Map<String, SccpLongMessageRule> longMessageRuleMap = new HashMap<String, SccpLongMessageRule>();
-  private Map<String, SccpRoutingAddress> routingAddressMap = new HashMap<String, SccpRoutingAddress>();
-  private Map<String, SccpRules> sccpRulesMap = new HashMap<String, SccpRules>();
+  private Map<String, SccpLongMessageRule> longMessageRuleMap = new LinkedHashMap<String, SccpLongMessageRule>();
+  private Map<String, SccpRoutingAddress> routingAddressMap = new LinkedHashMap<String, SccpRoutingAddress>();
+  private Map<String, SccpRules> sccpRulesMap = new LinkedHashMap<String, SccpRules>();
   private SccpServiceAccessPoint sap;
   private ParameterFactoryImpl factory = new ParameterFactoryImpl();
 
