@@ -37,13 +37,21 @@ public class SignalingGateway extends Thread {
     return instance;
   }
 
+  // The configuration file, read from ${mainConfig.path} or the classpath. The first program
+  // argument names it, so one installation can hold several configurations side by side.
+  private static final String DEFAULT_CONFIG_FILE = "naikeri-signaling-gateway.xml";
+  private static String configFileName = DEFAULT_CONFIG_FILE;
+
   private final Map<String, Application> applications = new HashMap<>();
   private final Map<String, ChannelHandler> channels = new HashMap<>();
   private final Map<String, LayerInterface> layers = new HashMap<>();
   private final Map<String, MonitorLayers> monitorLayers = new HashMap<>();
 
   public static SignalingGateway initialize(final String[] args) {
-    logger.info("Instance is initializing... " + System.getProperty("mainConfig.path"));
+    if (args != null && args.length > 0 && args[0] != null && !args[0].trim().isEmpty())
+      configFileName = args[0].trim();
+    logger.info("Instance is initializing with configuration '" + configFileName + "' from "
+        + System.getProperty("mainConfig.path"));
     SignalingGateway.getInstance();
     return instance;
   }
@@ -170,7 +178,10 @@ public class SignalingGateway extends Thread {
   @Override
   public void run() {
     try {
-      InputStream inputStream = (new SgwResource("naikeri-signaling-gateway.xml")).getAsStream();
+      InputStream inputStream = (new SgwResource(configFileName)).getAsStream();
+      if (inputStream == null)
+        throw new IllegalStateException("Configuration file '" + configFileName + "' found neither in '"
+            + System.getProperty("mainConfig.path") + "' (mainConfig.path) nor on the classpath");
       XmlConfiguration xmlConfiguration = new XmlConfiguration(inputStream);
       setUpLayers(xmlConfiguration);
       // setup the channels
