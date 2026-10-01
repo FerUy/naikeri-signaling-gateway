@@ -32,3 +32,7 @@ directory named by `-DmainConfig.path`, then on the classpath. One installation 
 configurations and choose between them at start-up.
 
 The gateway logs through SLF4J.
+
+## License
+
+Licensed under the GNU Affero General Public License v3.0; see [LICENSE](LICENSE).
