@@ -20,7 +20,6 @@ import com.naikeri.sgw.impl.settings.XmlConfiguration;
 import com.naikeri.sgw.network.LayerFactory;
 import com.naikeri.sgw.network.layers.M3uaLayer;
 import com.naikeri.sgw.network.monitoring.MonitorLayers;
-import com.naikeri.licensor.LicenseValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -259,20 +258,4 @@ public class SignalingGateway extends Thread {
     return layerInterface;
   }
 
-  @Override
-  public synchronized void start() {
-    super.start();
-
-    Thread checkLicense = new Thread(() -> {
-      try {
-        LicenseValidator licenseValidator = new LicenseValidator();
-        logger.warn("License validation via com.naikeri.licensor.LicenseValidator");
-        licenseValidator.validate();
-      } catch(Exception e) {
-        logger.error("Exception found during startup : " + e);
-      }
-    });
-    checkLicense.start();
-
-  }
 }

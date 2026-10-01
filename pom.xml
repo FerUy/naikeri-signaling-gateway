@@ -37,17 +37,6 @@
     </distributionManagement>
 
     <dependencies>
-        <!-- License Enforcer -->
-        <dependency>
-            <groupId>com.license4j</groupId>
-            <artifactId>license4j-runtime-library</artifactId>
-            <version>4.7.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.naikeri.licensor</groupId>
-            <artifactId>NaikeriLicensor</artifactId>
-            <version>1.0.0-4</version>
-        </dependency>
 
         <!-- Rate Limiter-->
         <dependency>
