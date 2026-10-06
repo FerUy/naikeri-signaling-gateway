@@ -1,5 +1,7 @@
 package com.naikeri.sgw.network.layers;
 
+import com.naikeri.sgw.helpers.StateDirectory;
+
 import com.naikeri.sgw.impl.chn.ChannelHandler;
 import com.naikeri.sgw.impl.settings.m3ua.M3uaApplicationServerProcessSettings;
 import com.naikeri.sgw.impl.settings.m3ua.M3uaApplicationServerSettings;
@@ -39,6 +41,7 @@ public class M3uaLayer implements LayerInterface {
     // configuration startup
     m3ua = new M3UAManagementImpl(m3uaSettings.getName(), m3uaSettings.getProductName(),
         new Ss7ExtInterfaceImpl());
+    m3ua.setPersistDir(StateDirectory.get());
     m3ua.setTransportManagement(sctp.getSctpManagement());
     m3ua.start();
     m3ua.setHeartbeatTime(m3uaSettings.getHeartbeatTime());

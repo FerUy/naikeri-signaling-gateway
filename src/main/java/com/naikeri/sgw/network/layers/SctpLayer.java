@@ -1,5 +1,7 @@
 package com.naikeri.sgw.network.layers;
 
+import com.naikeri.sgw.helpers.StateDirectory;
+
 import com.naikeri.sgw.impl.chn.ChannelHandler;
 import com.naikeri.sgw.impl.settings.sctp.AssociationSettings;
 import com.naikeri.sgw.impl.settings.sctp.SctpServerSettings;
@@ -31,6 +33,7 @@ public class SctpLayer implements LayerInterface {
     logger.info(sctpSettings.toString());
     // configuration startup
     sctp = new NettySctpManagementImpl(this.sctpSettings.getName());
+    sctp.setPersistDir(StateDirectory.get());
     sctp.setSingleThread(sctpSettings.isSingleThread());
     sctp.start();
 

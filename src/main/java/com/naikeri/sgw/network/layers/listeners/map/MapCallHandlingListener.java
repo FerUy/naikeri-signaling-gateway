@@ -102,7 +102,7 @@ public class MapCallHandlingListener implements MAPServiceCallHandlingListener {
   private void sendToChannel(MAPMessage message) {
     ChannelMessage channelMessage = getMessage(message.getMessageType().toString());
     channelMessage.setParameter(ProxyConstants.MESSAGE, message);
-    logger.info("{}, {}, [ DialogId = '{}'] ", message, channelMessage,
+    logger.debug("{}, {}, [ DialogId = '{}'] ", message, channelMessage,
         message.getMAPDialog().getLocalDialogId());
     channelHandler.receiveMessageRequest(channelMessage);
   }

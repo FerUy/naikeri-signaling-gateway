@@ -1,5 +1,7 @@
 package com.naikeri.sgw.network.layers;
 
+import com.naikeri.sgw.helpers.StateDirectory;
+
 import com.naikeri.sgw.impl.chn.ChannelHandler;
 import com.naikeri.sgw.impl.settings.sccp.SccpLongMessageRule;
 import com.naikeri.sgw.impl.settings.sccp.SccpMtp3Destination;
@@ -37,7 +39,7 @@ public class SccpLayer implements LayerInterface {
     ss7ExtInterface.setSs7ExtSccpInterface(sccpExtModule);
 
     sccp = new SccpStackImpl(sccpSettings.getName(), ss7ExtInterface);
-    // this.sccp.setPersistDir(persistDir)
+    this.sccp.setPersistDir(StateDirectory.get());
     // SAP ID can't be 0
     sccp.setMtp3UserPart(sccpSettings.getId(), m3ua.getMtp3UserPart());
 

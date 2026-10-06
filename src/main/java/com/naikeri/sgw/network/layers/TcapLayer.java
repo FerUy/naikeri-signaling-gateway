@@ -1,5 +1,7 @@
 package com.naikeri.sgw.network.layers;
 
+import com.naikeri.sgw.helpers.StateDirectory;
+
 import com.naikeri.sgw.impl.chn.ChannelHandler;
 import com.naikeri.sgw.impl.settings.tcap.TcapSettings;
 import com.naikeri.sgw.api.network.LayerInterface;
@@ -24,6 +26,7 @@ public class TcapLayer implements LayerInterface {
     logger.info(tcapSettings.toString());
     layerSettings = tcapSettings;
     tcap = new TCAPStackImpl(tcapSettings.getName(), sccp.getSccpProvider(), tcapSettings.getSubSystemNumber());
+    tcap.setPersistDir(StateDirectory.get());
     if (!tcapSettings.getExtraSubsystemNumbers().isEmpty()) {
         tcap.setExtraSsns(tcapSettings.getExtraSubsystemNumbers());
     }
